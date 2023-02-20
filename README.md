@@ -63,7 +63,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing <a name="installing"></a>
 
 ```shell
-git pull https://github.com/mrsessions/pocketbase-vue-starter
+git pull https://github.com/MRSessions/pocketbase-vue-starter.git
 ```
 
 #### Without Docker <a name="without-docker"></a>
