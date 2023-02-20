@@ -3,15 +3,15 @@ FROM golang:1.20.0-alpine3.17 AS builder
 
 WORKDIR /app
 
-COPY ../pocket-base/go.mod ../pocket-base/go.sum ./
+COPY ./pocket-base/go.mod ./pocket-base/go.sum ./
 
 RUN go env -w GO111MODULE=on
 
 RUN go mod download
 
-COPY ../pocket-base/*.go .
+COPY ./pocket-base/*.go .
 
-COPY ../pocket-base/migrations ./migrations
+COPY ./pocket-base/migrations ./migrations
 
 RUN go build -o pocketbase .
 
@@ -20,11 +20,11 @@ FROM node:18.14.0-alpine3.17 AS node-builder
 
 WORKDIR /app
 
-COPY ../vue-client/package.json .
+COPY ./vue-client/package.json .
 
 RUN npm install
 
-COPY ../vue-client .
+COPY ./vue-client .
 
 RUN npm run build:docker-single
 
