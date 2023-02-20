@@ -13,13 +13,9 @@ COPY ../pocket-base/*.go .
 
 COPY ../pocket-base/migrations ./migrations
 
-RUN go build .
+RUN go build -o pocketbase .
 
-# EXPOSE 8090
-
-# CMD ["/app/pocket-base", "serve", "--http=0.0.0.0:8090"]
-
-# build nodejs package in ./vue-client as builder
+# build vue client in ./vue-client as node-builder
 FROM node:18.14.0-alpine3.17 AS node-builder
 
 WORKDIR /app
@@ -42,5 +38,7 @@ COPY --from=builder /app/pocketbase ./
 COPY --from=node-builder /app/dist ./dist
 
 EXPOSE 8090
+
+RUN ls /app
 
 CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8090"]
