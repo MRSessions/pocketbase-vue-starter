@@ -1,0 +1,30 @@
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# PocketBase
+pb_data/
+pb_build
+*.exe
+pocketbase
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# local env files
+.env.local
+.env.*.local
+
+# vue-client
+.DS_Store
+node_modules
+/dist
+/**/dist
