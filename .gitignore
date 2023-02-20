@@ -11,7 +11,7 @@
 pb_data/
 pb_build
 *.exe
-pocketbase
+pocket-base/pocketbase
 
 # Log files
 npm-debug.log*
