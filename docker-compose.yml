@@ -2,12 +2,12 @@ version: "3"
 
 services:
   pocketbase-vue-starter:
-    image: mrsessions/pocketbase-vue-starter:latest
+    image: ghcr.io/mrsessions/pocketbase-vue-starter:latest
     build:
       context: ./
     container_name: pocketbase-vue-starter
     ports:
-      - 8091:8090
+      - 8090:8090
     volumes:
       - pocketbase-vue-starter:/app/pb_data
     restart: unless-stopped
