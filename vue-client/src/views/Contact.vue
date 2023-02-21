@@ -1,5 +1,5 @@
 <template>
-  <HelloWorld message="Vuetify" />
+  <HelloWorld message="Contact" />
 </template>
 
 <script lang="ts" setup>
