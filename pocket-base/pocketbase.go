@@ -10,6 +10,7 @@ import (
 	_ "pocket-base/migrations"
 
 	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -40,8 +41,33 @@ func main() {
 	)
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		// var filePath = os.DirFS(publicDir)
-		// var blah = apis.StaticDirectoryHandler(filePath, indexFallback)
+		var total int
+		err := app.DB().
+			Select("count(*)").
+			From("_admins").
+			Row(&total)
+		if err != nil {
+			return err
+		}
+		if total > 0 {
+			e.Router.Pre(middleware.Rewrite(map[string]string{
+				"/_":  "/",
+				"/_/": "/",
+			}))
+			println("Initial Admin Already Setup")
+		} else {
+			e.Router.Pre(middleware.Rewrite(map[string]string{
+				"/_":  "/",
+				"/_*": "/",
+			}))
+			println()
+			println("Initial Admin Setup Needed")
+			println()
+			println("PocketBase Admin Setup page ('/_/?installer#/') is replaced by the vue-client SetupAdmin page")
+			println()
+			println("After admin setup, you'll need to restart the container to access the PocketBase UI")
+			println()
+		}
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDir), indexFallback))
 		return nil
 	})
