@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "@vueuse/core": "^9.13.0",
     "pinia": "^2.0.23",
     "pocketbase": "^0.11.0",
     "roboto-fontface": "*",
