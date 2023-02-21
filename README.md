@@ -160,4 +160,5 @@ Add additional notes about how to deploy this on a live system. -->
 - [x] Add default layout
 - [x] Create initialize PB page in Vue to create first PocketBase Admin
 - [ ] Clean up README.md
+- [ ] Create a Docker Dev Environment
 
