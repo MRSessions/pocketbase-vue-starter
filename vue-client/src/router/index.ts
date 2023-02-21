@@ -24,9 +24,26 @@ const routes = [
         path: '/contact',
         name: 'Contact',
         component: () => import(/* webpackChunkName: "contact" */ '@/views/Contact.vue'),
-      }
+      },
+      {
+        path: '/admin',
+        component: () => import('@/App.vue'),
+        children: [
+          {
+            path: '/admin/setup-admin',
+            name: 'SetupAdmin',
+            component: () => import('@/views/admin/SetupAdmin.vue'),
+          },
+        ]
+      },
     ],
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/home',
+    // name: 'NotFound',
+    // component: () => import('@/views/NotFound.vue'),
+  }
 ]
 
 const router = createRouter({
