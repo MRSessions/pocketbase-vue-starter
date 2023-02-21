@@ -157,6 +157,7 @@ Add additional notes about how to deploy this on a live system. -->
 
 - [x] [Add Pocketbase Typegen](https://github.com/patmood/pocketbase-typegen) (Generate typescript definitions from your pocketbase.io schema.) documentation
 - [x] Add section on migrations.
+- [x] Add default layout
 - [ ] Create initialize PB page to create first PocketBase Admin
 - [ ] Clean up README.md
-- [ ] Add default layout
+
