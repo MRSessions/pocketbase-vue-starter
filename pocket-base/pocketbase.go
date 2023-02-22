@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	_ "pocket-base/migrations"
@@ -41,32 +42,12 @@ func main() {
 	)
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		var total int
-		err := app.DB().
-			Select("count(*)").
-			From("_admins").
-			Row(&total)
-		if err != nil {
-			return err
-		}
-		if total > 0 {
-			e.Router.Pre(middleware.Rewrite(map[string]string{
-				"/_":  "/",
-				"/_/": "/",
-			}))
-			println("Initial Admin Already Setup")
-		} else {
+		if getenvBool("POCKETBASE_DISABLE_UI") {
 			e.Router.Pre(middleware.Rewrite(map[string]string{
 				"/_":  "/",
 				"/_*": "/",
 			}))
-			println()
-			println("Initial Admin Setup Needed")
-			println()
-			println("PocketBase Admin Setup page ('/_/?installer#/') is replaced by the vue-client SetupAdmin page")
-			println()
-			println("After admin setup, you'll need to restart the container to access the PocketBase UI")
-			println()
+			log.Default().Println("PocketBase UI is disabled")
 		}
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDir), indexFallback))
 		return nil
@@ -89,9 +70,10 @@ func main() {
 					"message": "Initial setup is complete",
 				})
 			}
+			log.Default().Println("PocketBase admin user not found, initial setup needed")
 			return c.JSON(http.StatusOK, map[string]interface{}{
 				"isSetup": false,
-				"message": "Initial setup needed",
+				"message": "PocketBase admin user not found, initial setup needed",
 			})
 		})
 		return nil
@@ -108,4 +90,13 @@ func defaultPublicDir() string {
 		return "./dist"
 	}
 	return filepath.Join(os.Args[0], "../dist")
+}
+
+func getenvBool(key string) bool {
+	val := os.Getenv(key)
+	ret, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+	return ret
 }

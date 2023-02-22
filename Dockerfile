@@ -37,6 +37,9 @@ COPY --from=builder /app/pocketbase ./
 
 COPY --from=node-builder /app/dist ./dist
 
+# Set to true to disable the PocketBase UI if not using Docker Compose
+ENV POCKETBASE_DISABLE_UI=false
+
 EXPOSE 8090
 
 RUN ls /app
