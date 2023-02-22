@@ -98,7 +98,9 @@ Here's why:
 * Comes out of the box with a Vue Admin Setup page (but is still customizable through the `pocketbase.go` file)
 * Comes with a default layout to get you up and started quickly
 
-Of course, no one template will serve all projects since your needs may be different. I'll be adding more customizability in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+Of course, no one template will serve all projects since your needs may be different. I'll be adding more customizability in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
+
+<!-- Thanks to all the people who have contributed to expanding this template! -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -176,25 +178,81 @@ These instructions will get you a copy of the project up and running on your loc
 
 #### Defaults
 
-I have setup PocketBase to remove(rewrite) the PocketBase default routes. By default, it is allowed. If you want to disable PocketBase routes, you can set the environment variable `POCKETBASE_DISABLE_UI` to `true`. This will keep users from accessing the PocketBase UI.
+I have setup PocketBase to remove(rewrite) the PocketBase default routes. By default, it is allowed. If you want to disable PocketBase routes, you can set the environment variable `POCKETBASE_DISABLE_UI` to `true`. This will keep users from accessing the PocketBase UI. Find details in below code sections.
 
 <details>
-  <summary>Code Section</summary>
+  <summary>pocketbase.go</summary>
 
   ```go
-  app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-    var diablePocketbaseUI = os.Getenv("POCKETBASE_DISABLE_UI") == "false"
+  func main() {
+    app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+      if getenvBool("POCKETBASE_DISABLE_UI") {
+        e.Router.Pre(middleware.Rewrite(map[string]string{
+          "/_":  "/",
+          "/_*": "/",
+        }))
+        log.Default().Println("PocketBase UI is disabled")
+      }
+      e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDir), indexFallback))
+      return nil
+    })
+  }
 
-    if diablePocketbaseUI {
-      e.Router.Pre(middleware.Rewrite(map[string]string{
-        "/_":  "/",
-        "/_*": "/",
-      }))
-      log.Default().Println("PocketBase UI is disabled")
+  func getenvBool(key string) bool {
+    val := os.Getenv(key)
+    ret, err := strconv.ParseBool(val)
+    if err != nil {
+      return false
     }
-    e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDir), indexFallback))
-    return nil
-  })
+    return ret
+  }
+  ```
+
+</details>
+
+<details>
+  <summary>docker-compose.yml</summary>
+
+  ```yml
+  version: "3"
+
+  pocketbase-vue-starter:
+    image: ghcr.io/mrsessions/pocketbase-vue-starter:latest
+    container_name: pocketbase-vue-starter
+    restart: unless-stopped
+    environment:
+      - POCKETBASE_DISABLE_UI=false # Set to true to disable PocketBase UI
+    volumes:
+      - ./pocketbase:/data
+    ports:
+      - 8090:8090
+
+  volumes:
+    pocketbase-vue-starter:
+  ```
+</details>
+
+<details>
+  <summary>Dockerfile (Build Final Image Section)</summary>
+
+  ```dockerfile
+  # build final image
+  FROM golang:1.20.0-alpine3.17 AS final
+
+  WORKDIR /app
+
+  COPY --from=builder /app/pocketbase ./
+
+  COPY --from=node-builder /app/dist ./dist
+
+  # Set to true to disable the PocketBase UI if not using Docker Compose
+  ENV POCKETBASE_DISABLE_UI=false
+
+  EXPOSE 8090
+
+  RUN ls /app
+
+  CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8090"]
   ```
 
 </details>
