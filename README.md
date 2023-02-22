@@ -98,7 +98,9 @@ Here's why:
 * Comes out of the box with a Vue Admin Setup page (but is still customizable through the `pocketbase.go` file)
 * Comes with a default layout to get you up and started quickly
 
-Of course, no one template will serve all projects since your needs may be different. I'll be adding more customizability in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+Of course, no one template will serve all projects since your needs may be different. I'll be adding more customizability in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
+
+<!-- Thanks to all the people who have contributed to expanding this template! -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
