@@ -390,7 +390,7 @@ Use this space to list resources you find helpful and would like to give credit 
 [Vue-url]: https://vuejs.org/
 [Vuetify.js]: https://img.shields.io/badge/Vuetify-3.0.0+-green?style=for-the-badge&logo=vuetify&logoColor=blue
 [Vuetify-url]: https://next.vuetifyjs.com/en/
-[PocketBase.io]: https://img.shields.io/badge/PocketBase-0.12.3+-b8dbe4?style=for-the-badge&logo=pocketbase&logoColor=b8dbe4
+[PocketBase.io]: https://img.shields.io/badge/PocketBase-0.13.2+-b8dbe4?style=for-the-badge&logo=pocketbase&logoColor=b8dbe4
 [Pocketbase-url]: https://pocketbase.io
 [docker-shield]: https://img.shields.io/badge/Docker-latest-blue?style=for-the-badge&logo=docker&logoColor=blue
 [docker-url]: https://docker.com
