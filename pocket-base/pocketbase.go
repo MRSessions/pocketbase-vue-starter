@@ -5,11 +5,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	_ "pocket-base/migrations"
 
 	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -40,8 +42,13 @@ func main() {
 	)
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		// var filePath = os.DirFS(publicDir)
-		// var blah = apis.StaticDirectoryHandler(filePath, indexFallback)
+		if getenvBool("POCKETBASE_DISABLE_UI") {
+			e.Router.Pre(middleware.Rewrite(map[string]string{
+				"/_":  "/",
+				"/_*": "/",
+			}))
+			log.Default().Println("PocketBase UI is disabled")
+		}
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDir), indexFallback))
 		return nil
 	})
@@ -63,9 +70,10 @@ func main() {
 					"message": "Initial setup is complete",
 				})
 			}
+			log.Default().Println("PocketBase admin user not found, initial setup needed")
 			return c.JSON(http.StatusOK, map[string]interface{}{
 				"isSetup": false,
-				"message": "Initial setup needed",
+				"message": "PocketBase admin user not found, initial setup needed",
 			})
 		})
 		return nil
@@ -82,4 +90,13 @@ func defaultPublicDir() string {
 		return "./dist"
 	}
 	return filepath.Join(os.Args[0], "../dist")
+}
+
+func getenvBool(key string) bool {
+	val := os.Getenv(key)
+	ret, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+	return ret
 }

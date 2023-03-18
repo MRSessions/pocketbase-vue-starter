@@ -1,5 +1,5 @@
 # build go package in ./pocket-base as builder
-FROM golang:1.20.0-alpine3.17 AS builder
+FROM golang:1.20.2-alpine3.17 AS builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ COPY ./vue-client .
 RUN npm run build:docker-single
 
 # build final image
-FROM golang:1.20.0-alpine3.17 AS final
+FROM golang:1.20.2-alpine3.17 AS final
 
 WORKDIR /app
 
@@ -37,8 +37,9 @@ COPY --from=builder /app/pocketbase ./
 
 COPY --from=node-builder /app/dist ./dist
 
-EXPOSE 8090
+# Set to true to disable the PocketBase UI if not using Docker Compose
+ENV POCKETBASE_DISABLE_UI=false
 
-RUN ls /app
+EXPOSE 8090
 
 CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8090"]

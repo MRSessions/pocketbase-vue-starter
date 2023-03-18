@@ -6,6 +6,8 @@ services:
     build:
       context: ./
     container_name: pocketbase-vue-starter
+    environment:
+      - POCKETBASE_DISABLE_UI=false # Set to true to disable the PocketBase UI
     ports:
       - 8090:8090
     volumes:
