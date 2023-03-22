@@ -35,7 +35,8 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a> -->
 
-  <h1 align="center">(WIP) PocketBase Vue Starter</h1>
+  <!-- <h1 align="center"><s>PocketBase Vue Starter</s></h1> -->
+  <h1 align="center">PocketBase Vue Template</h1>
 
   <p align="center">
     A starter template for using Vue/Vuetify with Pocketbase as a backend.
