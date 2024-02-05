@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"net/http"
+	// "net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -10,7 +10,7 @@ import (
 
 	_ "pocket-base/migrations"
 
-	"github.com/labstack/echo/v5"
+	// "github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -21,8 +21,10 @@ import (
 func main() {
 	app := pocketbase.New()
 
-	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
-		Automigrate: true, // auto creates migration files when making collection changes
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+		Automigrate: isGoRun, // auto creates migration files when making collection changes
 	})
 
 	var publicDir string
@@ -53,31 +55,31 @@ func main() {
 		return nil
 	})
 
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		e.Router.GET("/api/init-check", func(c echo.Context) error {
-			var total int
+	// app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+	// 	e.Router.GET("/api/init-check", func(c echo.Context) error {
+	// 		var total int
 
-			err := app.DB().
-				Select("count(*)").
-				From("_admins").
-				Row(&total)
-			if err != nil {
-				return err
-			}
-			if total > 0 {
-				return c.JSON(http.StatusOK, map[string]interface{}{
-					"isSetup": true,
-					"message": "Initial setup is complete",
-				})
-			}
-			log.Default().Println("PocketBase admin user not found, initial setup needed")
-			return c.JSON(http.StatusOK, map[string]interface{}{
-				"isSetup": false,
-				"message": "PocketBase admin user not found, initial setup needed",
-			})
-		})
-		return nil
-	})
+	// 		err := app.DB().
+	// 			Select("count(*)").
+	// 			From("_admins").
+	// 			Row(&total)
+	// 		if err != nil {
+	// 			return err
+	// 		}
+	// 		if total > 0 {
+	// 			return c.JSON(http.StatusOK, map[string]interface{}{
+	// 				"isSetup": true,
+	// 				"message": "Initial setup is complete",
+	// 			})
+	// 		}
+	// 		log.Default().Println("PocketBase admin user not found, initial setup needed")
+	// 		return c.JSON(http.StatusOK, map[string]interface{}{
+	// 			"isSetup": false,
+	// 			"message": "PocketBase admin user not found, initial setup needed",
+	// 		})
+	// 	})
+	// 	return nil
+	// })
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
