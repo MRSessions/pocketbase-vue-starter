@@ -125,8 +125,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- [Node 18.14.0+](https://nodejs.org/en/download/)
-- [Go 1.20.1+](https://go.dev/dl/)
+- [Node 20.11.0+](https://nodejs.org/en/download/)
+- [Go 1.21.6+](https://go.dev/dl/)
 - [Docker (Recommended)](https://docker.com/get-started)
 
 ### Installation and Setup
@@ -144,7 +144,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 > *Note: You can run the project separately with the default ports 8090 (PocketBase) and 3000 (Vue). The defult .env file is using `VITE_POCKETBASE_URL` to set the PocketBase URL. You can change this to point to a different PocketBase instance or if you change the port.*
 
-1. In the pocket-base directory, run the following command to start the PocketBase server
+1. In the pocketbase directory, run the following command to start the PocketBase server
     ```sh
     go run . serve #Runs PocketBase on default port 8090
     ```
@@ -222,14 +222,16 @@ I have setup PocketBase to remove(rewrite) the PocketBase default routes. By def
     container_name: pocketbase-vue-starter
     restart: unless-stopped
     environment:
-      - POCKETBASE_DISABLE_UI=false # Set to true to disable PocketBase UI
+      - POCKETBASE_DISABLE_UI=true # Set to true to disable the PocketBase UI
+      - POCKETBASE_ADMIN_EMAIL=admin@example.com #This is the default if you don't set it or this value is removed
+      - POCKETBASE_ADMIN_PASSWORD=1234567890 #This is the default if you don't set it or this value is removed
     volumes:
-      - ./pocketbase:/data
+      - ./pocketbase-db:/app/pb_data
     ports:
-      - 8090:8090
+      - 8090:80
 
   volumes:
-    pocketbase-vue-starter:
+    pocketbase-db:
   ```
 </details>
 
@@ -238,7 +240,7 @@ I have setup PocketBase to remove(rewrite) the PocketBase default routes. By def
 
   ```dockerfile
   # build final image
-  FROM golang:1.20.0-alpine3.17 AS final
+  FROM golang:1.21.6-alpine3.19 AS final
 
   WORKDIR /app
 
@@ -251,16 +253,10 @@ I have setup PocketBase to remove(rewrite) the PocketBase default routes. By def
 
   EXPOSE 8090
 
-  RUN ls /app
-
-  CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8090"]
+  CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:80"]
   ```
 
 </details>
-
-> *Note: I plan to setup environment variables for initial setup of PocketBase. This will allow you to set the default username and password with `docker-compose.yml` instead of having to go through the setup process.*
-
-**(*To be Deprecated*)** There is an Initial Check API endpoint (`/api/init-check`) that the Vue client will check if the PocketBase instance is setup. If it is not, it will redirect the user to the setup-admin page to setup the inital admin. If it is setup, it will redirect back to the home page.
 
 #### Migrations
 
