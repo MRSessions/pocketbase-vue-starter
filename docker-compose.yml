@@ -8,11 +8,13 @@ services:
     container_name: pocketbase-vue-starter
     environment:
       - POCKETBASE_DISABLE_UI=false # Set to true to disable the PocketBase UI
+      - POCKETBASE_ADMIN_EMAIL=admin@example.com #This is the default if you don't set it or this value is removed
+      - POCKETBASE_ADMIN_PASSWORD=1234567890 #This is the default if you don't set it or this value is removed
     ports:
-      - 8090:8090
+      - 8090:80
     volumes:
-      - pocketbase-vue-starter:/app/pb_data
+      - pocketbase-db:/app/pb_data
     restart: unless-stopped
 
 volumes:
-  pocketbase-vue-starter:
+  pocketbase-db:
