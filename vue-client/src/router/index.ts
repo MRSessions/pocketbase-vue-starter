@@ -25,17 +25,6 @@ const routes = [
         name: 'Contact',
         component: () => import(/* webpackChunkName: "contact" */ '@/views/Contact.vue'),
       },
-      {
-        path: '/admin',
-        component: () => import('@/App.vue'),
-        children: [
-          {
-            path: '/admin/setup-admin',
-            name: 'SetupAdmin',
-            component: () => import('@/views/admin/SetupAdmin.vue'),
-          },
-        ]
-      },
     ],
   },
   {
